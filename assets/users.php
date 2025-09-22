@@ -143,7 +143,7 @@
             border-radius: 8px;
             border: none;
             cursor: pointer;
-            width: 120px;
+            width: 90px;
             height: 38px;
         }
 
