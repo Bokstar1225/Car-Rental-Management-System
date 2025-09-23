@@ -1,5 +1,24 @@
 <?php
     session_start();
+    include "../includes/db.php";
+    // PDO database connection
+    try {
+        // Handle search query
+        $search = isset($_GET['query']) ? $_GET['query'] : '';
+        $sql = "SELECT * FROM cars";
+        if (!empty($search)) {
+            $sql .= " WHERE name LIKE :search";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue(':search', '%' . $search . '%');
+        }else{
+            $stmt = $conn->prepare($sql);
+        }
+        $stmt->execute();
+        $cars = $stmt->fetchAll();
+    }catch(PDOException $e) {
+        die("Database error: " . $e->getMessage());
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,6 +39,7 @@
             background-color: white;
             padding-top: 22px;
             height: 78px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
         }
         
         * {
@@ -144,29 +164,19 @@
 
         <section style="margin: 66px;">
             <div class="card-container">
-                <div class="card">
-                    <img src="../images/BMW M3 2021.jpg" alt="Image of BMW M3">
-                <div class="card-content">
-                    <h3>BMW M3 2021</h3>
-                    <p>R11 900 per month</p>
-                </div>
-                </div>
-
-                <div class="card">
-                    <img src="../images/Kia Sorento 2024.jpg" alt="Image of Kia Sorento">
-                <div class="card-content">
-                    <h3>Kia Sorento 2024</h3>
-                    <p>R6300 per month</p>
-                </div>
-                </div>
-
-                <div class="card">
-                    <img src="../images/Kia Sportage.jpg" alt="Image of Kia Sportage">
-                <div class="card-content">
-                    <h3>Kia Sportage 2018</h3>
-                    <p>R5900 per month</p>
-                </div>
-                </div>
+                <?php if (count($cars) > 0): ?>
+                    <?php foreach ($cars as $car): ?>
+                        <div class="card">
+                            <img src="../images/<?= htmlspecialchars($car['Image']) ?>" alt="Image of <?= htmlspecialchars($car['Brand']) ?>">
+                            <div class="card-content">
+                                <h3><?= htmlspecialchars($car['Brand']) ?></h3>
+                                <p>R<?= htmlspecialchars($car['Price']) ?> per month</p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No cars found matching your search.</p>
+                <?php endif; ?>
             </div>
         </section>
     </main>

@@ -25,7 +25,8 @@
         header{
             background-color: white;
             padding-top: 22px;
-            height: 78px;
+            height: 85px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
         }
         
         * {
@@ -109,6 +110,48 @@
         .hero2{
             margin-top: 150px;
         }
+
+        .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2em;
+      justify-content: center;
+      margin-top: 22px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 300px;
+      overflow: hidden;
+      transition: transform 0.2s ease;
+      height: 160px;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 15px;
+    }
+
+    .card-content h3 {
+      margin: 0 0 10px;
+      font-size: 1.2em;
+    }
+
+    .card-content p {
+      color: #555;
+      font-size: 0.95em;
+    }
     </style>
 </head>
 <body>
@@ -140,26 +183,45 @@
 
         <section class="hero2">
             <h1 style="text-align: center;">System Overview</h1>
-            <div class="container">
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">💬</div>
-                    <h3>Total Users</h3>
-                    <p>Get instant access to empathetic conversations and practical advice whenever you need it, 24/7.</p>
+            <div class="card-container">
+                <div class="card">
+                <div class="card-content">
+                    <h2 style="text-align: center;">Total Users</h2>
+                    <?php
+                        echo 4;
+                     ?>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Mood Tracking</h3>
-                    <p>Monitor your emotional patterns, identify triggers, and track progress with intuitive visualizations.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🧘</div>
-                    <h3>Daily Meditations</h3>
-                    <p>Access a growing library of guided meditation sessions tailored to your current emotional state.</p>
+
+                <div class="card">
+                <div class="card-content">
+                    <h2 style="text-align: center;">Total Cars</h2>
+                    <?php
+                        $sql = "SELECT COUNT(*) AS total_cars FROM cars";
+                        $result = $conn->query($sql);
+                        $row = $result->fetchColumn();
+
+                        echo $row;
+                    ?>
+                </div>
+                </div>
+
+                <div class="card">
+                <div class="card-content">
+                    <h2 style="text-align: center;">Total Customer</h2>
+                    <?php
+                        $sql = "SELECT COUNT(*) AS total_customers FROM customers";
+                        $result = $conn->query($sql);
+                        $row = $result->fetchColumn();
+
+                        echo $row;
+                    ?>
+                </div>
                 </div>
             </div>
-        </div>
         </section>
+
+        <section style="margin-top: 22px;"></section>
     </main>
 </body>
 </html>

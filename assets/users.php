@@ -28,6 +28,7 @@
             background-color: white;
             padding-top: 22px;
             height: 78px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
         }
         
         * {
