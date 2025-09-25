@@ -29,7 +29,7 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 500px;
+            max-width: 650px;
             padding: 30px;
         }
         
@@ -98,35 +98,37 @@
 <body>
     <div class="container">
         <h2>Add New Car</h2>
-        <form action="add_car.php" method="POST">
+        <form action="add_car.php" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="brand">Brand</label>
                 <input type="text" id="brand" name="brand" placeholder="Enter the car brand">
-                <div class="error" id="nameError">Please enter a valid first name</div>
             </div>
             
             <div class="form-group">
                 <label for="model">Model</label>
                 <input type="text" id="model" name="model" placeholder="Enter the car model">
-                <div class="error" id="surnameError">Please enter a valid last name</div>
             </div>
             
             <div class="form-group">
                 <label for="plate-number">Plate Number</label>
                 <input type="text" id="plate-number" name="plate-number" placeholder="Enter the plate number">
-                <div class="error" id="emailError">Please enter a valid email address</div>
             </div>
 
             <div class="form-group">
                 <label for="car">Upload Car Image</label>
                 <input type="file" id="car" name="car">
-                <div class="error" id="emailError">Please enter a valid email address</div>
             </div>
             
             <div class="form-group">
                 <label for="status">Status</label>
-                <input type="text" id="status" name="status">
-                <div class="error" id="phoneError">Please enter a valid phone number</div>
+                <select name="status" id="status">
+                    <option value="Available" name="status">Available</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="price">Price(Monthly)</label>
+                <input type="number" id="price" name="price" placeholder="Enter the rental price of the car">
             </div>
             
             <button type="submit" name="Add">Add Car</button>
@@ -137,9 +139,60 @@
         if($_SERVER["REQUEST_METHOD"] === "POST"){
             $brand = $_POST['brand'];
             $model = $_POST['model'];
-
             $plateNumber = $_POST['plate-number'];
             $status = $_POST['status'];
+            $price = $_POST['price'];
+
+            // File upload
+            $targetDir = "../uploads/";
+            $imageUploaded = false;
+            $imagePath = null;
+
+            if(isset($_FILES['car']) && $_FILES['car']['error'] === UPLOAD_ERR_OK){
+                $fileName = basename($_FILES['car']['name']);
+                $targetPath = $targetDir . $fileName;
+                $fileType = strtolower(pathinfo($targetPath, PATHINFO_EXTENSION));
+                $allowedTypes = ["jpg", "png", "jpeg", "svg", "webp"];
+
+                if(in_array($fileType, $allowedTypes)){
+                    if (move_uploaded_file($_FILES["car"]['name'], $targetPath)){
+                        $imageUploaded = true;
+                        $imagePath = $targetPath;
+                    
+                    }else{
+                        echo "Error moving the uploaded file.";
+                    }
+                
+                }else{
+                    echo "Invalid file type.";
+                }
+            }
+
+            try{
+                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                // Insert into database, include image if uploaded
+                $sql = "INSERT INTO cars (Brand, Model, Plate_number, Status, Image, Price)
+                VALUES (:brand, :model, :plate_number, :status, :image, :price)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':brand', $brand);
+                $stmt->bindParam(':model', $model);
+                $stmt->bindParam(':plate_number', $plateNumber);
+                $stmt->bindParam(':status', $status);
+                $stmt->bindParam(':image', $imagePath);
+                $stmt->bindParam(':price', $price);
+
+                if($stmt->execute()){
+                    header("Location: cars.php");
+                    exit;
+                
+                }else{
+                    echo "An error occurred inserting the car.";
+                }
+
+            }catch(PDOException $e){
+                echo "An error has occurred: " . $e->getMessage();
+            }
         }
     ?>
 </body>

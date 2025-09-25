@@ -2,22 +2,18 @@
     session_start();
     include "../includes/db.php";
     // PDO database connection
-    try {
-        // Handle search query
-        $search = isset($_GET['query']) ? $_GET['query'] : '';
-        $sql = "SELECT * FROM cars";
-        if (!empty($search)) {
-            $sql .= " WHERE name LIKE :search";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue(':search', '%' . $search . '%');
-        }else{
-            $stmt = $conn->prepare($sql);
-        }
-        $stmt->execute();
-        $cars = $stmt->fetchAll();
-    }catch(PDOException $e) {
-        die("Database error: " . $e->getMessage());
+    $search = isset($_GET['search']) ? trim($_GET['search']) : "";
+
+    if ($search !== "") {
+        // Use a LIKE query for partial matching
+        $stmt = $conn->prepare("SELECT * FROM cars WHERE brand LIKE :search OR model LIKE :search");
+        $stmt->execute(['search' => "%$search%"]);
+    }else{
+        // Show all cars if no search
+        $stmt = $conn->query("SELECT * FROM cars");
     }
+
+    $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
@@ -76,6 +72,16 @@
             cursor: pointer;
         }
 
+        .add-button{
+            background-color: #c0392b;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            width: 90px;
+            height: 38px;
+        }
+
         .hero-section{
             display: flex;
             justify-content: space-between;
@@ -95,45 +101,55 @@
         }
 
         .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2em;
-      justify-content: center;
-    }
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3em;
+            justify-content: center;
+        }
 
-    .card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      width: 300px;
-      overflow: hidden;
-      transition: transform 0.2s ease;
-    }
+        .card {
+            flex: 0 0 calc(22.222% - 2em);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 300px;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
 
-    .card:hover {
-      transform: translateY(-5px);
-    }
+        .card:hover {
+            transform: translateY(-5px);
+        }
 
-    .card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
 
-    .card-content {
-      padding: 15px;
-    }
+        .card-content {
+            padding: 15px;
+        }
 
-    .card-content h3 {
-      margin: 0 0 10px;
-      font-size: 1.2em;
-    }
+        .card-content h3 {
+            margin: 0 0 10px;
+            font-size: 1.2em;
+        }
 
-    .card-content p {
-      color: #555;
-      font-size: 0.95em;
-    }
-
+        .card-content p {
+            color: #555;
+            font-size: 0.95em;
+        }
+        
+        #search-button{
+            background-color: #c0392b;
+            color: white;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            width: 90px;
+            height: 38px;
+        }
     </style>
 </head>
 <body>
@@ -155,7 +171,10 @@
     <main>
         <section style="margin-top: 40px;">
             <div class="hero-section">
-                <input type="search" placeholder="    Search for Car">
+                <form method="GET" action="cars.php">
+                    <input type="search" name="search" placeholder="Search for Car" value="<?php echo htmlspecialchars($search); ?>">
+                    <button id="search-button">Search</button>
+                </form>
                 <a href="add_car.php">
                     <button class="add-button">Add a Car</button>
                 </a>

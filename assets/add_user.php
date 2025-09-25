@@ -138,10 +138,11 @@
             try {
                 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-                // FIX: renamed column PhoneNumber (no space!)
+                //Inserting into customers table
                 $sql = "INSERT INTO customers (Name, Surname, Email, PhoneNumber)
                 VALUES (:name, :surname, :email, :phone)";
 
+                //Prepare statements to prevent SQL Injection
                 $stmt = $conn->prepare($sql);
                 $stmt->bindParam(':name', $name);
                 $stmt->bindParam(':surname', $surname);
@@ -155,7 +156,7 @@
                     echo "<br>An error has occurred";
                 }
             } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
+                echo "An error has occured " . $e->getMessage();
             }
 
         }

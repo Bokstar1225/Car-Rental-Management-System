@@ -157,6 +157,82 @@
             width: 90px;
             height: 38px;
         }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* Modal Box */
+        .modal {
+            background: #fff;
+            padding: 2rem;
+            max-width: 550px;
+            width: 90%;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .modal h2 {
+            font-size: 1.5rem;
+            color: #1a1a40;
+            margin-bottom: 1rem;
+        }
+
+        .modal p {
+            font-size: 0.95rem;
+            color: #444;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .btn-primary {
+            background: #c0392b;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #c0392b;
+            border: 2px solid #c0392b;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #c0392b;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -209,7 +285,12 @@
                             <td><?php echo htmlspecialchars($customer['Email']); ?></td>
                             <td><?php echo htmlspecialchars($customer['PhoneNumber']); ?></td>
                             <td><button id="edit-btn">Edit</button></td>
-                            <td><button id="delete-btn">Delete</button></td>
+                            <td>
+                                <form action="users.php" method="POST">
+                                    <input type="hidden" name="customerID">
+                                    <button id="delete-btn">Delete</button>
+                                </form>
+                            </td>
                         </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -222,6 +303,33 @@
                 </tbody>
             </table>
         </section>
+
+        <!--<div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+           <h2>Are you sure you want to delete this user</h2>
+        <div class="modal-buttons">
+            <form action="users.php" method="POST">
+                <button class="btn-primary" id="acceptButton" onclick="accecptDelete()">Yes</button>
+            </form>
+           <button class="btn-outline" id="declineButton" onclick="declineDelete()">No</button>
+        </div>
+        </div>
+        </div>-->
     </main>
+
+    <?php
+        if($_SERVER['REQUEST_METHOD'] === "POST"){
+        try{
+            $sql = "DELETE FROM customers WHERE CustomerID = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$_POST['customerID']]);
+        
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+    }
+    ?>
+
+    <script></script>
 </body>
 </html>

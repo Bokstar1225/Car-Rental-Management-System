@@ -126,7 +126,7 @@
       width: 300px;
       overflow: hidden;
       transition: transform 0.2s ease;
-      height: 160px;
+      height: 180px;
     }
 
     .card:hover {
@@ -188,7 +188,17 @@
                 <div class="card-content">
                     <h2 style="text-align: center;">Total Users</h2>
                     <?php
-                        echo 4;
+                        $sql = "
+                                SELECT COUNT(*) AS total_users FROM (
+                                    SELECT CustomerID FROM customers
+                                    UNION ALL
+                                    SELECT AdminID FROM admins
+                                ) AS combined_users";
+                        $stmt = $conn->query($sql);
+                        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                        $totalResult = $result['total_users'];
+
+                        echo "<p style='text-align: center; font-size: 28px;'>$totalResult</p>";
                      ?>
                 </div>
                 </div>
@@ -201,7 +211,7 @@
                         $result = $conn->query($sql);
                         $row = $result->fetchColumn();
 
-                        echo $row;
+                        echo "<p style='text-align: center; font-size: 28px;'>$row</p>";
                     ?>
                 </div>
                 </div>
@@ -214,7 +224,7 @@
                         $result = $conn->query($sql);
                         $row = $result->fetchColumn();
 
-                        echo $row;
+                        echo "<p style='text-align: center; font-size: 28px;'>$row</p>";
                     ?>
                 </div>
                 </div>
