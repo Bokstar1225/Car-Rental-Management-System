@@ -1,5 +1,4 @@
 <?php
-    session_start();
     include "../includes/db.php";
 ?>
 <!DOCTYPE html>
@@ -7,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Forgot Password</title>
     <style>
         * {
             box-sizing: border-box;
@@ -89,45 +88,51 @@
 </head>
 <body>
     <div class="container">
-        <h2>Login</h2>
-        <form id="loginForm" action="login.php" method="POST">
+        <h2>Reset Password</h2>
+        <form method="POST">
             <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" placeholder="Enter Your Email">
                 <div class="error" id="emailError">Please enter a valid email</div>
             </div><br>
             
-            <div class="form-group">
-                <label for="surname">Password</label>
-                <input type="password" id="password" name="password" placeholder="Enter Your Password">
-                <div class="error" id="passwordError">Please enter a valid password</div>
-                <a style="float: right; margin-top: 15px;" href="request_reset.php">Forgot Password</a>
-            </div>
-            
-            <button type="submit" name="login">Login</button>
+            <button type="submit" name="submit">Reset Link</button>
         </form>
-         <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
     </div>
-
+    
     <?php
-      
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-           $email = $_POST['email'];
-           $password = $_POST['password'];
+        if($_SERVER['REQUEST_METHOD'] === "POST"){
+            $email = trim($_POST['email']);
 
-          // Look up user in the admins table
-          $stmt = $conn->prepare("SELECT * FROM admins WHERE Email = ?");
-          $stmt->execute([$email]);
-          $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Check if email exists in database
+            $stmt = $conn->prepare("SELECT AdminID FROM admins WHERE Email = :email");
+            $stmt->execute([':email' => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($admin && password_verify($password, $admin['Password'])) {
-           $_SESSION['admin'] = $admin['Email'];
-           header("Location: home.php");
-           exit;
-        }else{
-          $error = "Invalid email or password";
+            if($user){
+                // Generate token
+                $token = bin2hex(random_bytes(50));
+                $expires = date("Y-m-d H:i:s", strtotime("+5 hour"));
+
+                // Store token in DB
+                $stmt = $conn->prepare("INSERT INTO password_resets (adminID, token, expires_at) VALUES (:uid, :token, :expires)");
+                $stmt->execute([
+                    ':uid' => $user['AdminID'],
+                    ':token' => $token,
+                    ':expires' => $expires
+                ]);
+
+                // Reset link
+                $resetLink = "http://localhost/car_rental_system/assets/reset_password.php?token=" . $token;
+
+                // Link to reset password since when are sending the link to the email
+                $message = "Password reset link (for testing): <a href='$resetLink'>$resetLink</a>";
+                echo "</br><p>$message</p>";
+           
+            }else{
+                echo "No account found with that email.";
+            }
         }
-     }
     ?>
 </body>
 </html>
