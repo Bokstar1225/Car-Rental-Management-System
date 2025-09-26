@@ -1,9 +1,7 @@
 let deleteButton = document.getElementById("delete-btn");
 
 deleteButton.addEventListener(() =>{
-    fetch(".users.php").then(response => response.text()).then(data =>{
-        document.getElementById("deleteModal").style.display = data + "flex";
-    })
+    document.getElementById("deleteModal").style.display = 'flex';
 });
 
 function accecptDelete(){

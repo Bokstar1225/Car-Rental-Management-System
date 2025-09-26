@@ -287,7 +287,7 @@
                             <td><button id="edit-btn">Edit</button></td>
                             <td>
                                 <form action="users.php" method="POST">
-                                    <input type="hidden" name="customerID">
+                                    <input type="hidden" name="customerID" value="<?php echo $customer['CustomerID']; ?>">
                                     <button id="delete-btn">Delete</button>
                                 </form>
                             </td>
@@ -323,6 +323,9 @@
             $sql = "DELETE FROM customers WHERE CustomerID = ?";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$_POST['customerID']]);
+
+            header("location: users.php");
+            exit;
         
         }catch(PDOException $e){
             echo $e->getMessage();

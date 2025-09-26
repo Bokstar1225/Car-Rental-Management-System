@@ -155,7 +155,7 @@
                 $allowedTypes = ["jpg", "png", "jpeg", "svg", "webp"];
 
                 if(in_array($fileType, $allowedTypes)){
-                    if (move_uploaded_file($_FILES["car"]['name'], $targetPath)){
+                    if (move_uploaded_file($_FILES["car"]['tmp_name'], $targetPath)){
                         $imageUploaded = true;
                         $imagePath = $targetPath;
                     

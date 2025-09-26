@@ -218,7 +218,7 @@
 
                 <div class="card">
                 <div class="card-content">
-                    <h2 style="text-align: center;">Total Customer</h2>
+                    <h2 style="text-align: center;">Total Customers</h2>
                     <?php
                         $sql = "SELECT COUNT(*) AS total_customers FROM customers";
                         $result = $conn->query($sql);

@@ -79,7 +79,7 @@
             border: none;
             cursor: pointer;
             width: 90px;
-            height: 38px;
+            height: 43px;
         }
 
         .hero-section{
@@ -108,7 +108,7 @@
         }
 
         .card {
-            flex: 0 0 calc(22.222% - 2em);
+            flex: 0 0 calc(25.255% - 2em);
             background: white;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -147,8 +147,8 @@
             border-radius: 8px;
             border: none;
             cursor: pointer;
-            width: 90px;
-            height: 38px;
+            width: 97px;
+            height: 43px;
         }
     </style>
 </head>
@@ -172,7 +172,7 @@
         <section style="margin-top: 40px;">
             <div class="hero-section">
                 <form method="GET" action="cars.php">
-                    <input type="search" name="search" placeholder="Search for Car" value="<?php echo htmlspecialchars($search); ?>">
+                    <input type="search" name="search" placeholder="     Search for Car" value="<?php echo htmlspecialchars($search); ?>">
                     <button id="search-button">Search</button>
                 </form>
                 <a href="add_car.php">

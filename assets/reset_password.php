@@ -20,6 +20,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Password</title>
+    <link rel="icon" href="../images/car-wheel-isolated-on-transparent-background-3d-rendering-illustration-png.webp" type="image/icon type">
     <style>
         * {
             box-sizing: border-box;
