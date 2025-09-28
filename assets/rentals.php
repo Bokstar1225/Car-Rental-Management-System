@@ -2,6 +2,11 @@
     session_start();
     include "../includes/db.php";
 
+    if(!isset($_SESSION['admin'])){
+        header("location: login.php");
+        exit;
+    }
+
     $search = isset($_GET['search']) ? trim($_GET['search']) : "";
 
     if ($search !== "") {
@@ -14,6 +19,23 @@
     }
 
     $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    try{
+        // SQL: get cars that are currently rented
+        $sql = "
+        SELECT c.CarID, c.Brand, c.Model, c.Plate_number, c.Image, c.Price, r.Rent_Date, r.Return_Date
+        FROM cars c
+        INNER JOIN rentals r ON c.CarID = r.CarID
+        WHERE CURDATE() BETWEEN r.Rent_Date AND r.Return_Date
+        ";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $rentedCars = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    }catch(PDOException $e){
+        echo "An error has occurred" . $e->getMessage();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -182,19 +204,26 @@
 
         <section style="margin: 66px;">
             <div class="card-container">
-                <?php if ($cars['Status'] === "Rented"): ?>
-                    <?php foreach ($cars as $car): ?>
+                <?php if (count($rentedCars) > 0): ?>
+                    <?php foreach ($rentedCars as $car): ?>
                         <div class="card">
-                            <img src="../images/<?= htmlspecialchars($car['Image']) ?>" alt="Image of <?= htmlspecialchars($car['Brand']) ?>">
-                            <div class="card-content">
-                                <h3><?= htmlspecialchars($car['Brand']) ?></h3>
-                                <p>R<?= htmlspecialchars($car['Price']) ?> per month</p>
-                            </div>
+                            <?php if (!empty($car['Image'])): ?>
+                                <img src="../uploads/<?= htmlspecialchars($car['Image']) ?>" alt="<?= htmlspecialchars($car['Brand']) ?>">
+                                <?php else: ?>
+                                    <img src="uploads/default_car.jpg" alt="Car Image">
+                                    <?php endif; ?>
+                                    <div class="card-content">
+                                        <h3><?= htmlspecialchars($car['Brand']) ?> <?= htmlspecialchars($car['Model']) ?></h3>
+                                        <p><strong>Plate:</strong> <?= htmlspecialchars($car['Plate_number']) ?></p>
+                                        <p><strong>Price/day:</strong> $<?= htmlspecialchars($car['Price']) ?></p>
+                                        <p><strong>Rented From:</strong> <?= htmlspecialchars($car['Rent_Date']) ?></p>
+                                        <p><strong>To:</strong> <?= htmlspecialchars($car['Return_Date']) ?></p>
+                                    </div>
                         </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>No cars rented</p>
-                <?php endif; ?>
+                        <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No cars are currently rented.</p>
+                            <?php endif; ?>
             </div>
         </section>
     </main>

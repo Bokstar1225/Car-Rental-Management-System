@@ -105,6 +105,7 @@
             flex-wrap: wrap;
             gap: 3em;
             justify-content: center;
+            margin-top: 26px;
         }
 
         .card {
@@ -182,6 +183,7 @@
         </section>
 
         <section style="margin: 66px;">
+            <h2 style="text-align: center; font-size: 30px;">Our Vehicles</h2>
             <div class="card-container">
                 <?php if (count($cars) > 0): ?>
                     <?php foreach ($cars as $car): ?>

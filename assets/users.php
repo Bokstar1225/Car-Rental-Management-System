@@ -2,6 +2,11 @@
     session_start();
     include "../includes/db.php";
 
+    if(!isset($_SESSION['admin'])){
+        header("location: login.php");
+        exit;
+    }
+
     try {
         $stmt = $conn->query("SELECT CustomerID, Name, Email, PhoneNumber FROM customers ORDER BY CustomerID ASC");
         $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
