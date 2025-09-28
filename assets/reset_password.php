@@ -1,5 +1,11 @@
 <?php
+    session_start();
     include "../includes/db.php";
+
+    if(!isset($_SESSION['admin'])){
+        header("location: login.php");
+        exit;
+    }
     
     if (isset($_GET['token'])) {
     $token = $_GET['token'];

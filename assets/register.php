@@ -82,7 +82,7 @@
 
             let isValid = true;
 
-            if(registerEmail.length() > 30 || registerPassword.length() > 30){
+            if(registerEmail.length > 30 || registerPassword.length > 30){
                 errorText.textContent = "Email or Password is too long";
                 errorText.style.color = "red";
                 errorText.style.marginTop = "5px";
@@ -93,7 +93,7 @@
                 isValid = false;
     
             }else{
-                emailText.textContent = ""; //Clear error message
+                errorText.textContent = ""; //Clear error message
             }
 
             if (!isValid) {

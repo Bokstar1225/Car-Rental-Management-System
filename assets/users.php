@@ -290,12 +290,7 @@
                             <td><?php echo htmlspecialchars($customer['Email']); ?></td>
                             <td><?php echo htmlspecialchars($customer['PhoneNumber']); ?></td>
                             <td><button id="edit-btn">Edit</button></td>
-                            <td>
-                                <form action="users.php" method="POST">
-                                    <input type="hidden" name="customerID" value="<?php echo $customer['CustomerID']; ?>">
-                                    <button id="delete-btn">Delete</button>
-                                </form>
-                            </td>
+                            <td><button id="delete-btn">Delete</button></td>
                         </tr>
                         <?php endforeach; ?>
                     <?php else: ?>
@@ -309,17 +304,43 @@
             </table>
         </section>
 
-        <!--<div class="modal-overlay" id="deleteModal">
+        <div class="modal-overlay" id="deleteModal">
         <div class="modal">
            <h2>Are you sure you want to delete this user</h2>
         <div class="modal-buttons">
             <form action="users.php" method="POST">
-                <button class="btn-primary" id="acceptButton" onclick="accecptDelete()">Yes</button>
+                <input type="hidden" name="customerID" value="<?php echo $customer['CustomerID']; ?>">
+                <button class="btn-primary" id="acceptButton">Yes</button>
             </form>
-           <button class="btn-outline" id="declineButton" onclick="declineDelete()">No</button>
+           <button class="btn-outline" id="declineButton">No</button>
         </div>
         </div>
-        </div>-->
+        </div>
+
+        <div class="modal-overlay" id="editModal">
+    <div class="modal">
+        <h2>Edit Customer</h2>
+        <form id="editForm" action="edit.php" method="POST">
+            <input type="hidden" name="customerID" id="editCustomerID">
+            <div style="text-align: left; margin-bottom: 1rem;">
+                <label for="editName">Name:</label>
+                <input type="text" name="name" id="editName" required style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
+            </div>
+            <div style="text-align: left; margin-bottom: 1rem;">
+                <label for="editEmail">Email:</label>
+                <input type="email" name="email" id="editEmail" required style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
+            </div>
+            <div style="text-align: left; margin-bottom: 1.5rem;">
+                <label for="editPhone">Phone Number:</label>
+                <input type="text" name="phone" id="editPhone" required style="width: 100%; padding: 0.5rem; border-radius: 4px; border: 1px solid #ccc;">
+            </div>
+            <div class="modal-buttons">
+                <button type="submit" class="btn-primary">Save Changes</button>
+                <button type="button" class="btn-outline" id="cancelEditButton">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
     </main>
 
     <?php
@@ -328,9 +349,6 @@
             $sql = "DELETE FROM customers WHERE CustomerID = ?";
             $stmt = $conn->prepare($sql);
             $stmt->execute([$_POST['customerID']]);
-
-            header("location: users.php");
-            exit;
         
         }catch(PDOException $e){
             echo $e->getMessage();
@@ -338,6 +356,6 @@
     }
     ?>
 
-    <script></script>
+    <script src="./js/script 2.js"></script>
 </body>
 </html>

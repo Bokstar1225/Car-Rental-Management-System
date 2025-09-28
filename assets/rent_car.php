@@ -1,6 +1,11 @@
 <?php
     session_start();
     include "../includes/db.php";
+
+    if(!isset($_SESSION['admin'])){
+        header("location: login.php");
+        exit;
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">

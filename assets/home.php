@@ -89,12 +89,14 @@
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
+            animation: slideDownAndFadeIn 3s;
         }
         
         .hero p {
             font-size: 1.2rem;
             margin-bottom: 2rem;
             opacity: 0.9;
+            animation: slideRightAndFadeIn 4s;
         }
 
         .getStarted-button{
@@ -112,46 +114,83 @@
         }
 
         .card-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2em;
-      justify-content: center;
-      margin-top: 22px;
-    }
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2em;
+            justify-content: center;
+            margin-top: 22px;
+        }
 
-    .card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      width: 300px;
-      overflow: hidden;
-      transition: transform 0.2s ease;
-      height: 180px;
-    }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 300px;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+            height: 180px;
+        }
 
-    .card:hover {
-      transform: translateY(-5px);
-    }
+        .card:hover {
+            transform: translateY(-5px);
+        }
 
-    .card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
 
-    .card-content {
-      padding: 15px;
-    }
+        .card-content {
+            padding: 15px;
+        }
 
-    .card-content h3 {
-      margin: 0 0 10px;
-      font-size: 1.2em;
-    }
+        .card-content h3 {
+            margin: 0 0 10px;
+            font-size: 1.2em;
+        }
 
-    .card-content p {
-      color: #555;
-      font-size: 0.95em;
-    }
+        .card-content p {
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        /* Animation */
+        @keyframes slideDownAndFadeIn{
+            from{
+                transform: translateY(-100%);
+            }
+
+            to{
+                transform: translateY(0%);
+            }
+
+            0%{
+                opacity: 0;
+            }
+
+            100%{
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideRightAndFadeIn{
+            from{
+                transform: translateX(-30%);
+            }
+
+            to{
+                transform: translateX(0%);
+            }
+
+            0%{
+                opacity: 0;
+            }
+
+            100%{
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
